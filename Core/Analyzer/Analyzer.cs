@@ -1,4 +1,4 @@
-namespace Core;
+namespace Core.Analyzer;
 
 public static class Analyzer
 {

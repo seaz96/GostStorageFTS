@@ -1,7 +1,7 @@
 namespace Core.Entities;
 
-public class Word(string word)
+public class Word
 {
     public Guid Id { get; set; }
-    public string Content { get; init; } = word;
+    public string Content { get; set; }
 }

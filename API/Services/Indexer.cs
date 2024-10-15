@@ -1,5 +1,6 @@
 using API.Data;
 using Core;
+using Core.Analyzer;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Index = Core.Entities.Index;
@@ -14,7 +15,7 @@ public class Indexer(DataContext context) : IIndexer
         {
             return false;
         }
-        
+
         var dictionary = Analyzer.AnalyzeText(text);
         await using var transaction = await context.Database.BeginTransactionAsync();
         try
@@ -28,11 +29,17 @@ public class Indexer(DataContext context) : IIndexer
 
                 if (dbWord is null)
                 {
-                    dbWord = new Word(word);
+                    dbWord = new Word { Content = word };
                     await context.Words.AddAsync(dbWord);
                 }
 
-                await context.Indexes.AddAsync(new Index(dbWord.Id, gostId, frequency));
+                await context.Indexes.AddAsync(
+                    new Index
+                    {
+                        WordId = dbWord.Id,
+                        Frequency = frequency,
+                        GostId = gostId
+                    });
 
                 await context.SaveChangesAsync();
             }

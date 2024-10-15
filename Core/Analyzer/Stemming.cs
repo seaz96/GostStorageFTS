@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace Core;
+namespace Core.Analyzer;
 
 public static class Stemming
 {

@@ -5,6 +5,8 @@ namespace Core.Entities;
 public class Gost
 {
     public int Id { get; set; }
+    public string Designation { get; set; }
+    public string FullName { get; set; }
     public string? CodeOKS { get; set; }
     public string? ActivityField { get; set; }
     [Range(1000, 9999)] public int? AcceptanceYear { get; set; }
@@ -20,6 +22,7 @@ public class Gost
     public string? Amendments { get; set; }
     public DocStatuses Status { get; set; }
     public HarmonizationLevels? Harmonization { get; set; }
+    public int IndexedWordsCount { get; set; }
 }
 
 public enum DocAdoptionLevels

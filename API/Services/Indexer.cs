@@ -6,7 +6,7 @@ using Index = Core.Entities.Index;
 
 namespace API.Services;
 
-public class Indexer(DataContext context)
+public class Indexer(DataContext context) : IIndexer
 {
     public async Task<bool> TryIndexAsync(int gostId, string text)
     {

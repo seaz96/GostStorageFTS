@@ -1,4 +1,5 @@
 using API.Data;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,10 @@ builder.Services.AddDbContext<DataContext>(
             options.UseNpgsql(builder.Configuration.GetValue<string>("DB_CONNECTION_STRING"));
         },
     ServiceLifetime.Transient);
+
+builder.Services.AddScoped<IGostsService, GostsService>();
+builder.Services.AddScoped<IIndexer, Indexer>();
+builder.Services.AddScoped<ISearch, Search>();
 
 var app = builder.Build();
 

@@ -1,9 +1,9 @@
 namespace Core.Entities;
 
-public class Index
+public class Index(Guid wordId, int gostId, int frequency)
 {
-    public Guid Id { get; set; }
-    public Guid WordId { get; set; }
-    public Guid GostId { get; set; }
-    public int Frequency { get; set; }
+    public Guid Id { get; }
+    public Guid WordId { get; init; } = wordId;
+    public int GostId { get; init; } = gostId;
+    public int Frequency { get; init; } = frequency;
 }

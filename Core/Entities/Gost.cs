@@ -7,7 +7,7 @@ public class Gost
     public int Id { get; set; }
     public string Designation { get; set; }
     public string FullName { get; set; }
-    public string? CodeOKS { get; set; }
+    public string? CodeOks { get; set; }
     public string? ActivityField { get; set; }
     [Range(1000, 9999)] public int? AcceptanceYear { get; set; }
     [Range(1000, 9999)] public int? CommissionYear { get; set; }
@@ -17,7 +17,6 @@ public class Gost
     public string? KeyWords { get; set; }
     public string? ApplicationArea { get; set; }
     public DocAdoptionLevels? AdoptionLevel { get; set; }
-    public string? DocumentText { get; set; }
     public string? Changes { get; set; }
     public string? Amendments { get; set; }
     public DocStatuses Status { get; set; }

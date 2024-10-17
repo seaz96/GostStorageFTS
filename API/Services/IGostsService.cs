@@ -4,6 +4,6 @@ namespace API.Services;
 
 public interface IGostsService
 {
-    Task AddAsync(Gost gost);
+    Task<Gost> AddAsync(Gost gost);
     Task<Gost?> GetByIdAsync(int id);
 }

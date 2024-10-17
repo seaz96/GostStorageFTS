@@ -1,6 +1,8 @@
+using API.Models;
+
 namespace API.Services;
 
 public interface IIndexer
 {
-    Task<bool> TryIndexAsync(int gostId, string text);
+    Task<bool> TryIndexAsync(IndexRequest request);
 }

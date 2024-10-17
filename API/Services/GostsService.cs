@@ -6,10 +6,11 @@ namespace API.Services;
 
 public class GostsService(DataContext context) : IGostsService
 {
-    public async Task AddAsync(Gost gost)
+    public async Task<Gost> AddAsync(Gost gost)
     {
-        await context.Gosts.AddAsync(gost);
+        var dbGostEntry = await context.Gosts.AddAsync(gost);
         await context.SaveChangesAsync();
+        return dbGostEntry.Entity;
     }
 
     public Task<Gost?> GetByIdAsync(int id)

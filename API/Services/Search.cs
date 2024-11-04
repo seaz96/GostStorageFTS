@@ -10,12 +10,6 @@ public class Search(DataContext context) : ISearch
 {
     public async Task<List<SearchEntity>> SearchAsync(SearchQuery query)
     {
-        // todo(seaz96): мб это в контроллере лучше валидировать?
-        if (query.Text is null)
-        {
-            return await SearchAll(query);
-        }
-        
         var words = query.Text.TokenizeText().Filter().Stem().ToArray();
         
         var dbWords = context.Words.Where(w => words.Contains(w.Content)).Select(w => w.Id);
@@ -54,7 +48,7 @@ public class Search(DataContext context) : ISearch
             .ToListAsync();
     }
 
-    private Task<List<SearchEntity>> SearchAll(SearchQuery query)
+    public Task<List<SearchEntity>> SearchAllAsync(SearchQuery query)
     {
         return context.Gosts
             .OrderBy(x => x.CodeOks)

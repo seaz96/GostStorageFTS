@@ -23,4 +23,10 @@ public class Controller(IIndexer indexer, ISearch search) : ControllerBase
     {
         return new OkObjectResult(await search.SearchAsync(query));
     }
+    
+    [HttpGet("search-all")]
+    public async Task<IActionResult> SearchAllAsync([FromQuery] SearchQuery query)
+    {
+        return new OkObjectResult(await search.SearchAll(query));
+    }
 }

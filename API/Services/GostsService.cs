@@ -17,4 +17,9 @@ public class GostsService(DataContext context) : IGostsService
     {
         return context.Gosts.FirstOrDefaultAsync(gost => gost.Id == id);
     }
+
+    public Task<bool> DeleteAsync(long id)
+    {
+        throw new NotImplementedException();
+    }
 }

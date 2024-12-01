@@ -8,8 +8,8 @@ public class GostsService(DataContext context) : IGostsService
 {
     public async Task<Gost> AddAsync(Gost gost)
     {
-        var dbGostEntry = await context.Gosts.AddAsync(gost);
-        await context.SaveChangesAsync();
+        var dbGostEntry = await context.Gosts.AddAsync(gost).ConfigureAwait(false);
+        await context.SaveChangesAsync().ConfigureAwait(false);
         return dbGostEntry.Entity;
     }
 
@@ -18,8 +18,18 @@ public class GostsService(DataContext context) : IGostsService
         return context.Gosts.FirstOrDefaultAsync(gost => gost.Id == id);
     }
 
-    public Task<bool> DeleteAsync(long id)
+    public async Task DeleteAsync(int id)
     {
-        throw new NotImplementedException();
+        var dbGostEntry = await context.Gosts.FirstOrDefaultAsync(gost => gost.Id == id).ConfigureAwait(false);
+        
+        if (dbGostEntry is null)
+            return;
+
+        var indexes = context.Indexes.Where(i => i.GostId == id);
+        
+        context.Gosts.Remove(dbGostEntry);
+        context.Indexes.RemoveRange(indexes);
+        
+        await context.SaveChangesAsync().ConfigureAwait(false);
     }
 }

@@ -45,7 +45,8 @@ public class Search(DataContext context) : ISearch
             })
             .Skip(query.Skip)
             .Take(query.Take)
-            .ToListAsync();
+            .ToListAsync()
+            .ConfigureAwait(false);
     }
 
     public Task<List<SearchEntity>> SearchAllAsync(SearchQuery query)

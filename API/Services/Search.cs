@@ -35,9 +35,11 @@ public class Search(DataContext context) : ISearch
                 context.Gosts,
                 i => i.GostId,
                 g => g.Id,
-                (index, gost) => new GostScore(
-                    gost,
-                    (index.Coverage / (double)words.Length + index.Frequency / (double)gost.IndexedWordsCount!) / 2.0d))
+                (index, gost) => new GostScore
+                {
+                    Gost = gost,
+                    Score = (index.Coverage / (double)words.Length + index.Frequency / (double)gost.IndexedWordsCount!) / 2.0d
+                })
             .AddFilters(query.SearchFilters)
             .OrderByDescending(x => x.Score)
             .Select(x => new SearchEntity(x.Gost.Id, x.Gost.CodeOks, x.Gost.Designation, x.Gost.FullName, x.Score))

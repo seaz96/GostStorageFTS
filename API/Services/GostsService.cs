@@ -32,4 +32,16 @@ public class GostsService(DataContext context) : IGostsService
         
         await context.SaveChangesAsync().ConfigureAwait(false);
     }
+
+    public async Task UpdateWordsIndexCount(int id, int count)
+    {
+        var dbGostEntry = await context.Gosts.FirstOrDefaultAsync(gost => gost.Id == id).ConfigureAwait(false);
+        
+        if (dbGostEntry is null)
+            return;
+        
+        dbGostEntry.IndexedWordsCount = count;
+        context.Gosts.Update(dbGostEntry);
+        await context.SaveChangesAsync().ConfigureAwait(false);
+    }
 }

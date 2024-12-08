@@ -1,4 +1,3 @@
-using System.Text;
 using API.Models;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +10,9 @@ public class Controller(IIndexer indexer, ISearch search, IGostsService gostsSer
     [HttpPost("index")]
     public async Task<IActionResult> IndexAsync([FromBody] IndexRequest request)
     {
-        var isSuccess = await indexer.TryIndexAsync(request).ConfigureAwait(false);
-
-        if (!isSuccess)
-            return new BadRequestResult();
-        return Ok();
+        return await indexer.TryIndexAsync(request).ConfigureAwait(false) 
+            ? Ok()
+            : new BadRequestResult();
     }
 
     [HttpGet("search")]
@@ -34,6 +31,6 @@ public class Controller(IIndexer indexer, ISearch search, IGostsService gostsSer
     [HttpGet("search-all")]
     public async Task<IActionResult> SearchAllAsync([FromQuery] SearchQuery query)
     {
-        return new OkObjectResult(await search.SearchAllAsync(query));
+        return new OkObjectResult(await search.SearchAllAsync(query).ConfigureAwait(false));
     }
 }

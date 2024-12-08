@@ -1,9 +1,3 @@
 namespace API.Models;
 
-public record SearchQuery
-{
-    public string? Text { get; init; }
-    public SearchFilters? SearchFilters { get; init; }
-    public int Take { get; init; }
-    public int Skip { get; init; }
-}
+public record SearchQuery(string? Text, SearchFilters? SearchFilters, int Take = 10, int Skip = 0);

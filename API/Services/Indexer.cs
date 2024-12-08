@@ -1,7 +1,6 @@
 using System.Text;
 using API.Data;
 using API.Models;
-using Core;
 using Core.Analyzer;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -70,7 +69,9 @@ public class Indexer(DataContext context, IGostsService gostsService) : IIndexer
                 await context.SaveChangesAsync().ConfigureAwait(false);
             }
 
-            dbGost.IndexedWordsCount = dictionary.Count;
+            await gostsService
+                .UpdateWordsIndexCount(dbGost.Id, dictionary.Sum(x => x.Value))
+                .ConfigureAwait(false);
             await context.SaveChangesAsync().ConfigureAwait(false);
 
             await transaction.CommitAsync().ConfigureAwait(false);

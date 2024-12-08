@@ -2,14 +2,21 @@ using API.Data;
 using API.Models;
 using Core.Analyzer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Services;
 
 namespace API.Services;
 
 public class Search(DataContext context) : ISearch
 {
     //todo(azanov.n): мне кажется с такими запросами я превращаюсь в trainee
+    //todo(azanov.n): нужно научиться обрабатывать поиск с фильтрами и null text
     public async Task<List<SearchEntity>> SearchAsync(SearchQuery query)
     {
+        if (query.Text is null)
+        {
+            return await SearchAllAsync(query).ConfigureAwait(false);
+        }
+        
         var words = query.Text.TokenizeText().Filter().Stem().ToArray();
         
         var dbWords = context.Words.Where(w => words.Contains(w.Content)).Select(w => w.Id);

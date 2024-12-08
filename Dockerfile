@@ -15,7 +15,7 @@ RUN dotnet build "Core.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-FROM base AS final
+FROM build AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "API.dll"]

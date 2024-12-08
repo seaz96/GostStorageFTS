@@ -43,8 +43,8 @@ public class Search(DataContext context) : ISearch
             .AddFilters(query.SearchFilters)
             .OrderByDescending(x => x.Score)
             .Select(x => new SearchEntity(x.Gost.Id, x.Gost.CodeOks, x.Gost.Designation, x.Gost.FullName, x.Score))
-            .Skip(query.Skip)
-            .Take(query.Take)
+            .Skip(query.Offset)
+            .Take(query.Limit)
             .ToListAsync()
             .ConfigureAwait(false);
     }
@@ -53,8 +53,8 @@ public class Search(DataContext context) : ISearch
     {
         return context.Gosts
             .OrderBy(x => x.CodeOks)
-            .Skip(query.Skip)
-            .Take(query.Take)
+            .Skip(query.Offset)
+            .Take(query.Limit)
             .Select(x => new SearchEntity(x.Id, x.CodeOks, x.Designation, x.FullName, 1))
             .ToListAsync();
     }

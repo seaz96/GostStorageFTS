@@ -4,11 +4,12 @@ using API.Models;
 using Core.Analyzer;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
+using ILogger = Serilog.ILogger;
 using Index = Core.Entities.Index;
 
 namespace API.Services;
 
-public class Indexer(DataContext context, IGostsService gostsService) : IIndexer
+public class Indexer(DataContext context, IGostsService gostsService, ILogger logger) : IIndexer
 {
     public async Task<bool> TryIndexAsync(IndexRequest request)
     {
@@ -77,9 +78,9 @@ public class Indexer(DataContext context, IGostsService gostsService) : IIndexer
             await transaction.CommitAsync().ConfigureAwait(false);
             return true;
         }
-        catch
+        catch (Exception e)
         {
-            //Log.Error(e);
+            logger.Error(e.ToString());
             await transaction.RollbackAsync().ConfigureAwait(false);
             return false;
         }

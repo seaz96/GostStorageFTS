@@ -8,8 +8,6 @@ namespace API.Services;
 
 public class Search(DataContext context) : ISearch
 {
-    //todo(azanov.n): мне кажется с такими запросами я превращаюсь в trainee
-    //todo(azanov.n): нужно научиться обрабатывать поиск с фильтрами и null text
     public async Task<List<SearchEntity>> SearchAsync(SearchQuery query)
     {
         if (query.Text is null)
@@ -17,13 +15,15 @@ public class Search(DataContext context) : ISearch
             return await SearchAllAsync(query).ConfigureAwait(false);
         }
         
-        var words = query.Text.TokenizeText().Filter().Stem().ToArray();
-        
-        var dbWords = context.Words.Where(w => words.Contains(w.Content)).Select(w => w.Id);
+        var words = query.Text.TokenizeText().Filter().Stem().ToHashSet();
 
-        var dbIndexes = context.Indexes.Where(i => dbWords.Contains(i.WordId));
-
-        return await dbIndexes
+        return await context.Words
+            .Where(w => words.Contains(w.Content))
+            .Join(
+                context.Indexes,
+                w => w.Id,
+                i => i.WordId,
+                (w, i) => i)
             .GroupBy(e => e.GostId)
             .Select(group => new
             {
@@ -38,7 +38,7 @@ public class Search(DataContext context) : ISearch
                 (index, gost) => new GostScore
                 {
                     Gost = gost,
-                    Score = (index.Coverage / (double)words.Length + index.Frequency / (double)gost.IndexedWordsCount!) / 2.0d
+                    Score = (index.Coverage / (double)words.Count + index.Frequency / (double)gost.IndexedWordsCount!) / 2.0d
                 })
             .AddFilters(query.SearchFilters)
             .OrderByDescending(x => x.Score)

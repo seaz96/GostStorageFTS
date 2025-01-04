@@ -27,10 +27,4 @@ public class Controller(IIndexer indexer, ISearch search, IGostsService gostsSer
         await gostsService.DeleteAsync(id).ConfigureAwait(false);
         return Ok();
     }
-    
-    [HttpGet("search-all")]
-    public async Task<IActionResult> SearchAllAsync([FromQuery] SearchQuery query)
-    {
-        return new OkObjectResult(await search.SearchAllAsync(query).ConfigureAwait(false));
-    }
 }

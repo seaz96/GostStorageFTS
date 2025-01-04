@@ -1,6 +1,8 @@
 using API.Data;
 using API.Models;
+using API.Utilities;
 using Core.Analyzer;
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Services;
 
@@ -8,6 +10,9 @@ namespace API.Services;
 
 public class Search(DataContext context) : ISearch
 {
+    private const int DefaultLimit = 10;
+    private const int DefaultOffset = 10;
+    
     public async Task<List<SearchEntity>> SearchAsync(SearchQuery query)
     {
         if (query.Text is null)
@@ -24,22 +29,23 @@ public class Search(DataContext context) : ISearch
                 w => w.Id,
                 i => i.WordId,
                 (w, i) => i)
-            .GroupBy(e => e.GostId)
-            .Select(group => new
-            {
-                GostId = group.Key,
-                Frequency = group.Sum(i => i.Frequency),
-                Coverage = group.Count()
-            })
             .Join(
                 context.Gosts,
                 i => i.GostId,
                 g => g.Id,
-                (index, gost) => new GostScore
+                (index, gost) => new
                 {
-                    Gost = gost,
-                    Score = (index.Coverage / (double)words.Count + index.Frequency / (double)gost.IndexedWordsCount!) / 2.0d
+                    index.Frequency,
+                    index.WordId,
+                    Gost = gost
                 })
+            .GroupBy(group => group.Gost)
+            .Select(group => new GostScore
+            {
+                Gost = group.Key,
+                Score = (group.Count() / (double)words.Count + group.Sum(
+                    i => i.Frequency) / (double)group.Key.IndexedWordsCount!) / 2.0d
+            })
             .AddFilters(query.SearchFilters)
             .OrderByDescending(x => x.Score)
             .Select(x => new SearchEntity(x.Gost.Id, x.Gost.CodeOks, x.Gost.Designation, x.Gost.FullName, x.Score))
@@ -52,33 +58,11 @@ public class Search(DataContext context) : ISearch
     public Task<List<SearchEntity>> SearchAllAsync(SearchQuery query)
     {
         return context.Gosts
+            .AddFilters(query.SearchFilters)
             .OrderBy(x => x.CodeOks)
-            .Skip(query.Offset ?? 0)
-            .Take(query.Limit ?? 10)
+            .Skip(query.Offset ?? DefaultOffset)
+            .Take(query.Limit ?? DefaultLimit)
             .Select(x => new SearchEntity(x.Id, x.CodeOks, x.Designation, x.FullName, 1))
             .ToListAsync();
-    }
-}
-
-internal static class QueryableExtensions
-{
-    // todo(seaz96): нужно будет это порефакторить
-    internal static IQueryable<GostScore> AddFilters(this IQueryable<GostScore> queryable, SearchFilters? filters)
-    {
-        if (filters is null)
-        {
-            return queryable;
-        }
-
-        return queryable
-            .Where(x => filters.CodeOks == null || (x.Gost.CodeOks != null && x.Gost.CodeOks.Contains(filters.CodeOks)))
-            .Where(x => filters.AcceptanceYear == null || x.Gost.AcceptanceYear == filters.AcceptanceYear)
-            .Where(x => filters.CommissionYear == null || x.Gost.CommissionYear == filters.CommissionYear)
-            .Where(x => filters.Author == null || (x.Gost.Author != null && x.Gost.Author.Contains(filters.Author)))
-            .Where(x => filters.AcceptedFirstTimeOrReplaced == null || (x.Gost.AcceptedFirstTimeOrReplaced != null && x.Gost.AcceptedFirstTimeOrReplaced.Contains(filters.AcceptedFirstTimeOrReplaced)))
-            .Where(x => filters.KeyWords == null || (x.Gost.KeyWords != null && x.Gost.KeyWords.Contains(filters.KeyWords)))
-            .Where(x => filters.Harmonization == null || x.Gost.Harmonization == filters.Harmonization)
-            .Where(x => filters.Status == null || x.Gost.Status == filters.Status)
-            .Where(x => filters.AdoptionLevel == null || x.Gost.AdoptionLevel == filters.AdoptionLevel);
     }
 }

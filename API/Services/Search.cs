@@ -2,20 +2,18 @@ using API.Data;
 using API.Models;
 using API.Utilities;
 using Core.Analyzer;
-using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Services;
 
 namespace API.Services;
 
 public class Search(DataContext context) : ISearch
 {
     private const int DefaultLimit = 10;
-    private const int DefaultOffset = 10;
+    private const int DefaultOffset = 0;
     
     public async Task<List<SearchEntity>> SearchAsync(SearchQuery query)
     {
-        if (query.Text is null)
+        if (string.IsNullOrEmpty(query.Text))
         {
             return await SearchAllAsync(query).ConfigureAwait(false);
         }

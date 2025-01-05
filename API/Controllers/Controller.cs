@@ -1,5 +1,6 @@
 using API.Models;
 using API.Services;
+using Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -25,6 +26,13 @@ public class Controller(IIndexer indexer, ISearch search, IGostsService gostsSer
     public async Task<IActionResult> SearchAsync([FromQuery] int id)
     {
         await gostsService.DeleteAsync(id).ConfigureAwait(false);
+        return Ok();
+    }
+
+    [HttpPost("update-status")]
+    public async Task<IActionResult> UpdateStatusAsync([FromBody] UpdateStatusRequest request)
+    {
+        await gostsService.UpdateDocumentStatus(request).ConfigureAwait(false);
         return Ok();
     }
 }

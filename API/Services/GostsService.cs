@@ -1,4 +1,5 @@
 using API.Data;
+using API.Models;
 using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -41,6 +42,20 @@ public class GostsService(DataContext context) : IGostsService
             return;
         
         dbGostEntry.IndexedWordsCount = count;
+        context.Gosts.Update(dbGostEntry);
+        await context.SaveChangesAsync().ConfigureAwait(false);
+    }
+
+    public async Task UpdateDocumentStatus(UpdateStatusRequest request)
+    {
+        var dbGostEntry = await context.Gosts
+            .FirstOrDefaultAsync(document => document.Id == request.Id)
+            .ConfigureAwait(false);
+        
+        if (dbGostEntry is null)
+            return;
+        
+        dbGostEntry.Status = request.Status;
         context.Gosts.Update(dbGostEntry);
         await context.SaveChangesAsync().ConfigureAwait(false);
     }

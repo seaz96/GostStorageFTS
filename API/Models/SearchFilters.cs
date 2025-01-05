@@ -10,7 +10,7 @@ public record SearchFilters(
     string? Author,
     string? AcceptedFirstTimeOrReplaced,
     string? KeyWords,
-    DocAdoptionLevels? AdoptionLevel,
-    DocStatuses? Status,
-    HarmonizationLevels? Harmonization
+    AdoptionLevel? AdoptionLevel,
+    DocumentStatus? Status,
+    HarmonizationLevel? Harmonization
 );

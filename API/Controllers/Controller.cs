@@ -22,6 +22,12 @@ public class Controller(IIndexer indexer, ISearch search, IGostsService gostsSer
         return new OkObjectResult(await search.SearchAsync(query).ConfigureAwait(false));
     }
     
+    [HttpGet("count")]
+    public async Task<IActionResult> CountAsync([FromQuery] SearchQuery query)
+    {
+        return new OkObjectResult(await search.CountAsync(query).ConfigureAwait(false));
+    }
+    
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> SearchAsync([FromQuery] int id)
     {

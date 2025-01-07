@@ -23,7 +23,9 @@ internal static class QueryableExtensions
             .Where(x => filters.KeyWords == null || (x.Gost.KeyWords != null && x.Gost.KeyWords.Contains(filters.KeyWords)))
             .Where(x => filters.Harmonization == null || x.Gost.Harmonization == filters.Harmonization)
             .Where(x => filters.Status == null || x.Gost.Status == filters.Status)
-            .Where(x => filters.AdoptionLevel == null || x.Gost.AdoptionLevel == filters.AdoptionLevel);
+            .Where(x => filters.AdoptionLevel == null || x.Gost.AdoptionLevel == filters.AdoptionLevel)
+            .Where(x => filters.Changes == null || (x.Gost.Changes != null && x.Gost.Changes.Contains(filters.Changes)))
+            .Where(x => filters.Amendments == null || (x.Gost.Amendments != null && x.Gost.Amendments.Contains(filters.Amendments)));
     }
     
     internal static IQueryable<Gost> AddFilters(this IQueryable<Gost> queryable, SearchFilters? filters)
@@ -42,6 +44,8 @@ internal static class QueryableExtensions
             .Where(x => filters.KeyWords == null || (x.KeyWords != null && x.KeyWords.Contains(filters.KeyWords)))
             .Where(x => filters.Harmonization == null || x.Harmonization == filters.Harmonization)
             .Where(x => filters.Status == null || x.Status == filters.Status)
-            .Where(x => filters.AdoptionLevel == null || x.AdoptionLevel == filters.AdoptionLevel);
+            .Where(x => filters.AdoptionLevel == null || x.AdoptionLevel == filters.AdoptionLevel)
+            .Where(x => filters.Changes == null || (x.Changes != null && x.Changes.Contains(filters.Changes)))
+            .Where(x => filters.Amendments == null || (x.Amendments != null && x.Amendments.Contains(filters.Amendments)));
     }
 }

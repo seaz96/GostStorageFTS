@@ -12,5 +12,7 @@ public record SearchFilters(
     string? KeyWords,
     AdoptionLevel? AdoptionLevel,
     DocumentStatus? Status,
-    HarmonizationLevel? Harmonization
+    HarmonizationLevel? Harmonization,
+    string? Changes,
+    string? Amendments
 );

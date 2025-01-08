@@ -95,6 +95,7 @@ public class Search(DataContext context) : ISearch
         return context.Gosts
             .AddFilters(query.SearchFilters)
             .OrderBy(x => x.CodeOks)
+            .ThenBy(x => x.Id)
             .Skip(query.Offset ?? DefaultOffset)
             .Take(query.Limit ?? DefaultLimit)
             .Select(x => new SearchEntity(x.Id, x.CodeOks, x.Designation, x.FullName, 1))

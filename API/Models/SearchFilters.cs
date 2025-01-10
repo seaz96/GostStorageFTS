@@ -10,9 +10,9 @@ public record SearchFilters(
     string? Author,
     string? AcceptedFirstTimeOrReplaced,
     string? KeyWords,
-    AdoptionLevel? AdoptionLevel,
-    DocumentStatus? Status,
-    HarmonizationLevel? Harmonization,
+    HashSet<AdoptionLevel>? AdoptionLevel,
+    HashSet<DocumentStatus>? Status,
+    HashSet<HarmonizationLevel>? Harmonization,
     string? Changes,
     string? Amendments
 );

@@ -29,7 +29,7 @@ public class Controller(IIndexer indexer, ISearch search, IGostsService gostsSer
     }
     
     [HttpDelete("delete/{id}")]
-    public async Task<IActionResult> SearchAsync([FromQuery] int id)
+    public async Task<IActionResult> DeleteAsync(int id)
     {
         await gostsService.DeleteAsync(id).ConfigureAwait(false);
         return Ok();

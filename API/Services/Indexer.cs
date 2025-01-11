@@ -44,13 +44,9 @@ public class Indexer(DataContext context, IGostsService gostsService, ILogger lo
                          await gostsService.AddAsync(request.Document);
                 
             context.Indexes.RemoveRange(context.Indexes.Where(x => x.GostId == gostId));
-            await context.SaveChangesAsync().ConfigureAwait(false);
 
-            foreach (var kv in dictionary)
+            foreach (var (word, frequency) in dictionary)
             {
-                var word = kv.Key;
-                var frequency = kv.Value;
-
                 var dbWord = await context.Words.FirstOrDefaultAsync(w => w.Content == word).ConfigureAwait(false);
 
                 if (dbWord is null)
@@ -67,13 +63,11 @@ public class Indexer(DataContext context, IGostsService gostsService, ILogger lo
                 };
                 
                 await context.Indexes.AddAsync(index).ConfigureAwait(false);
-                await context.SaveChangesAsync().ConfigureAwait(false);
             }
 
             await gostsService
                 .UpdateWordsIndexCount(dbGost.Id, dictionary.Sum(x => x.Value))
                 .ConfigureAwait(false);
-            await context.SaveChangesAsync().ConfigureAwait(false);
 
             await transaction.CommitAsync().ConfigureAwait(false);
             return true;

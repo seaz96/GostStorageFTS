@@ -4,8 +4,14 @@ using Index = Core.Entities.Index;
 
 namespace API.Data;
 
-public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
+public class DataContext
 {
+    public DataContext(DbContextOptions<DataContext> options)
+        : base(options)
+    {
+        Database.Migrate();
+    }
+    
     public DbSet<Gost> Gosts { get; set; }
     public DbSet<Word> Words { get; set; }
     public DbSet<Index> Indexes { get; set; }

@@ -4,7 +4,7 @@ using Index = Core.Entities.Index;
 
 namespace API.Data;
 
-public class DataContext
+public class DataContext : DbContext
 {
     public DataContext(DbContextOptions<DataContext> options)
         : base(options)
